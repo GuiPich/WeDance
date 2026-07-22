@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 export function LoginScreen() {
   return (
     <View>
-      <Text>Connexion</Text>
+      <Text>Connexion WeDance!</Text>
     </View>
   );
 }

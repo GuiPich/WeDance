@@ -10,9 +10,17 @@ export function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: "Connexion" }}
+        />
 
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ title: "Inscription" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
