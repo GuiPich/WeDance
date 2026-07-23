@@ -44,8 +44,6 @@ export function LoginScreen({ navigation }: Props) {
 
       Alert.alert("Erreur", "Identifiants incorrects");
     }
-
-    navigation.replace("Home");
   };
 
   return (
