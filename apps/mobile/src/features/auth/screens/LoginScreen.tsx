@@ -24,19 +24,13 @@ export function LoginScreen({ navigation }: Props) {
   const { login } = useAuthStore();
 
   const handleLogin = async () => {
-    console.log("BOUTON CLIQUE");
-
     try {
       const response = await api.post("/auth/login", {
         email,
         password,
       });
 
-      console.log("REPONSE API", response.data);
-
       login(response.data.accessToken);
-
-      console.log("TOKEN STOCKE", useAuthStore.getState().token);
 
       Alert.alert("Succès", "Connexion réussie");
     } catch (error) {
