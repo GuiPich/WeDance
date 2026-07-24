@@ -8,10 +8,30 @@ import { RootStackParamList } from "../../../types/navigation";
 
 import { getEvent } from "../../../services/event";
 
+import { Button } from "react-native";
+
+import { useAuthStore } from "../../../store/authStore";
+
+import { joinEvent } from "../../../services/event";
+
 type Props = NativeStackScreenProps<RootStackParamList, "EventDetails">;
 
 export function EventDetailsScreen({ route }: Props) {
   const [event, setEvent] = useState<any>(null);
+
+  const token = useAuthStore((state) => state.token);
+
+  const handleJoin = async () => {
+    try {
+      await joinEvent(route.params.eventId, token ?? "");
+
+      const updatedEvent = await getEvent(route.params.eventId);
+
+      setEvent(updatedEvent);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -44,6 +64,13 @@ export function EventDetailsScreen({ route }: Props) {
       </Text>
 
       <Text style={styles.description}>{event.description}</Text>
+
+      <Text>
+        👥 {event.participantsCount}
+        participant(s)
+      </Text>
+
+      <Button title="Je participe" onPress={handleJoin} />
     </View>
   );
 }

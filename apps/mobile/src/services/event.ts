@@ -29,3 +29,17 @@ export async function getEvent(id: string) {
 
   return response.data;
 }
+
+export async function joinEvent(eventId: string, token: string) {
+  const response = await api.post(
+    `/events/${eventId}/join`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  return response.data;
+}
