@@ -14,6 +14,13 @@ type AuthState = {
 
   user: User | null;
 
+  location: {
+    latitude: number;
+    longitude: number;
+  } | null;
+
+  setLocation: (location) => void;
+
   setUser: (user: User) => void;
 
   login: (token: string) => Promise<void>;

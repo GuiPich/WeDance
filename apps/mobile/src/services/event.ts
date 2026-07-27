@@ -73,3 +73,23 @@ export async function unfavoriteEvent(eventId: string, token: string) {
     },
   });
 }
+
+export async function getMyEvents(token: string) {
+  const response = await api.get("/events/my-events", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+export async function deleteEvent(id: string, token: string) {
+  const response = await api.delete(`/events/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}

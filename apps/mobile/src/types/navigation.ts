@@ -6,4 +6,8 @@ export type RootStackParamList = {
   EventDetails: {
     eventId: string;
   };
+  Map: undefined;
+  EditEvent: {
+    eventId: string;
+  };
 };

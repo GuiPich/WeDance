@@ -12,13 +12,14 @@ import {
   leaveEvent,
   favoriteEvent,
   unfavoriteEvent,
+  deleteEvent,
 } from "../../../services/event";
 
 import { useAuthStore } from "../../../store/authStore";
 
 type Props = NativeStackScreenProps<RootStackParamList, "EventDetails">;
 
-export function EventDetailsScreen({ route }: Props) {
+export function EventDetailsScreen({ route, navigation }: Props) {
   const [event, setEvent] = useState<any>(null);
 
   const token = useAuthStore((state) => state.token);
@@ -32,6 +33,8 @@ export function EventDetailsScreen({ route }: Props) {
   const isFavorite = event?.favoriteList?.some(
     (favorite: any) => favorite.id === user?.id,
   );
+
+  const isOwner = event?.createdById === user?.id;
 
   const refreshEvent = async () => {
     const updatedEvent = await getEvent(route.params.eventId);
@@ -47,6 +50,12 @@ export function EventDetailsScreen({ route }: Props) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleEdit = () => {
+    navigation.navigate("EditEvent", {
+      eventId: route.params.eventId,
+    });
   };
 
   const handleLeave = async () => {
@@ -73,6 +82,16 @@ export function EventDetailsScreen({ route }: Props) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteEvent(route.params.eventId, token ?? "");
+
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const load = async () => {
       const data = await getEvent(route.params.eventId);
@@ -94,6 +113,10 @@ export function EventDetailsScreen({ route }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{event.title}</Text>
+
+      <Text>💃 {event.danceType}</Text>
+
+      <Text>📍 {event.address}</Text>
 
       <Text>📍 {event.city}</Text>
 
@@ -131,6 +154,14 @@ export function EventDetailsScreen({ route }: Props) {
         title={isParticipant ? "Quitter l'événement" : "Je participe"}
         onPress={isParticipant ? handleLeave : handleJoin}
       />
+
+      {isOwner && (
+        <>
+          <Button title="Modifier" onPress={handleEdit} />
+
+          <Button title="Supprimer" onPress={handleDelete} />
+        </>
+      )}
     </View>
   );
 }
