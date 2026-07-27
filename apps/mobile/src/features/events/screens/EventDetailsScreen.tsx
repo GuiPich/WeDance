@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { RootStackParamList } from "../../../types/navigation";
 
-import { getEvent } from "../../../services/event";
-
-import { Button } from "react-native";
+import {
+  getEvent,
+  joinEvent,
+  leaveEvent,
+  favoriteEvent,
+  unfavoriteEvent,
+} from "../../../services/event";
 
 import { useAuthStore } from "../../../store/authStore";
-
-import { joinEvent } from "../../../services/event";
 
 type Props = NativeStackScreenProps<RootStackParamList, "EventDetails">;
 
@@ -21,13 +23,51 @@ export function EventDetailsScreen({ route }: Props) {
 
   const token = useAuthStore((state) => state.token);
 
+  const user = useAuthStore((state) => state.user);
+
+  const isParticipant = event?.participantList?.some(
+    (participant: any) => participant.id === user?.id,
+  );
+
+  const isFavorite = event?.favoriteList?.some(
+    (favorite: any) => favorite.id === user?.id,
+  );
+
+  const refreshEvent = async () => {
+    const updatedEvent = await getEvent(route.params.eventId);
+
+    setEvent(updatedEvent);
+  };
+
   const handleJoin = async () => {
     try {
       await joinEvent(route.params.eventId, token ?? "");
 
-      const updatedEvent = await getEvent(route.params.eventId);
+      await refreshEvent();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      setEvent(updatedEvent);
+  const handleLeave = async () => {
+    try {
+      await leaveEvent(route.params.eventId, token ?? "");
+
+      await refreshEvent();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        await unfavoriteEvent(route.params.eventId, token ?? "");
+      } else {
+        await favoriteEvent(route.params.eventId, token ?? "");
+      }
+
+      await refreshEvent();
     } catch (error) {
       console.log(error);
     }
@@ -65,12 +105,32 @@ export function EventDetailsScreen({ route }: Props) {
 
       <Text style={styles.description}>{event.description}</Text>
 
-      <Text>
-        👥 {event.participantsCount}
-        participant(s)
+      <Text>👥 {event.participantsCount} participant(s)</Text>
+
+      <Text
+        style={{
+          marginTop: 20,
+          fontWeight: "bold",
+        }}
+      >
+        Participants
       </Text>
 
-      <Button title="Je participe" onPress={handleJoin} />
+      {event.participantList?.map((participant: any) => (
+        <Text key={participant.id}>
+          • {participant.firstName} {participant.lastName}
+        </Text>
+      ))}
+
+      <Button
+        title={isFavorite ? "💔 Retirer des favoris" : "❤️ Ajouter aux favoris"}
+        onPress={handleFavorite}
+      />
+
+      <Button
+        title={isParticipant ? "Quitter l'événement" : "Je participe"}
+        onPress={isParticipant ? handleLeave : handleJoin}
+      />
     </View>
   );
 }
@@ -89,5 +149,6 @@ const styles = StyleSheet.create({
 
   description: {
     marginTop: 20,
+    marginBottom: 20,
   },
 });
