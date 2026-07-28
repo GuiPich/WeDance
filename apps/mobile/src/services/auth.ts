@@ -9,3 +9,14 @@ export async function getMe(token: string) {
 
   return response.data;
 }
+
+export async function register(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}) {
+  const response = await api.post("/auth/register", data);
+
+  return response.data;
+}

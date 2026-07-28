@@ -29,13 +29,37 @@ export function AppNavigator() {
             }}
           />
 
-          <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+          <Stack.Screen
+            name="CreateEvent"
+            component={CreateEventScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
 
-          <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+          <Stack.Screen
+            name="EventDetails"
+            component={EventDetailsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
 
-          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen
+            name="Map"
+            component={MapScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
 
-          <Stack.Screen name="EditEvent" component={EditEventScreen} />
+          <Stack.Screen
+            name="EditEvent"
+            component={EditEventScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
         </>
       ) : (
         <>
@@ -46,11 +70,11 @@ export function AppNavigator() {
               headerShown: false,
             }}
           />
-
           <Stack.Screen
             name="Register"
             component={RegisterScreen}
             options={{
+              title: "Inscription",
               headerShown: false,
             }}
           />
